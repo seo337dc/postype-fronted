@@ -5,6 +5,10 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-}
+  env: {
+    ACCESS_KEY: process.env.ACCESS_KEY,
+    URL: process.env.URL,
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

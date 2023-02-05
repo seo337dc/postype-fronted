@@ -1,29 +1,40 @@
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Cookies } from 'react-cookie';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import usePagination from '@Hook/usePagination';
-
-import ProductList from '@Components/ProductList';
-import Pagination from '@Components/Pagination';
+import PhotoList from '@Components/PhotoList';
 import Error from '@Components/Error';
 
 import { userAtom } from '@Atom';
-import { getUserInfo, getProductList } from '@Controller/index';
+import { getInitSearch } from '@Controller/index';
 
 import type { NextPage } from 'next';
 import type { AxiosResponse } from 'axios';
 import type { TLoginDto, TUser, TUserDto } from '@Type/user';
-import { TProductDto } from '@Type/product';
+import type { TPhoto } from '@Type/photo';
+
 import Loading from '@Components/Loading';
 
 const cookies = new Cookies();
 
+import { useMediaQuery } from 'react-responsive';
+import { Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+
 const HomePage: NextPage = () => {
+  const isPc = useMediaQuery({
+    query: '(min-width:1024px)',
+  });
+  const isTablet = useMediaQuery({
+    query: '(min-width:768px) and (max-width:1023px)',
+  });
+  const isMobile = useMediaQuery({
+    query: '(max-width:767px)',
+  });
+
   const router = useRouter();
   const { page } = router.query;
   const userInfo = cookies.get('user') as TLoginDto | null | undefined;
@@ -32,70 +43,44 @@ const HomePage: NextPage = () => {
 
   const [user, setUser] = useRecoilState<TUser | null>(userAtom);
 
-  useQuery(['getUserInfo'], () => getUserInfo(userInfo?.user.id || ''), {
-    enabled: !!userInfo?.accessToken,
-    onSuccess: (result: AxiosResponse<TUserDto>) => {
-      if (result.status === 200) {
-        setUser(result.data.data.user);
+  const [keyword, setKeyword] = useState('');
+  const [photoList, setPhotList] = useState<TPhoto[]>([]);
+
+  useQuery(['getInitSearch'], () => getInitSearch(), {
+    onSuccess: (res: AxiosResponse<TPhoto[]>) => {
+      if (res.status === 200) {
+        setPhotList(res.data);
       }
     },
   });
 
-  const { data, isLoading, error } = useQuery<TProductDto>(
-    ['getProductList', nowPage],
-    () => getProductList(nowPage),
-    {}
-  );
-
-  const pagenation = usePagination({
-    total: data?.data.totalCount || 0,
-    nowPage,
-    setNowPage,
-  });
-
-  const handleLogout = () => {
-    cookies.remove('user');
-    setUser(null);
-  };
-
-  useEffect(() => {
-    if (page) setNowPage(Number(page));
-  }, [page]);
+  console.log(photoList);
 
   return (
     <>
       <Header>
-        <Link href='/'>
-          <Title>HAUS</Title>
-        </Link>
-        {user ? (
-          <div>
-            <p>{user.name}</p>
-            <LogoutBtn onClick={handleLogout}>logout</LogoutBtn>
-          </div>
-        ) : (
-          <Link href='/login'>
-            <p>login</p>
-          </Link>
-        )}
+        <nav>
+          <a className='XDKcL eziW_' title='홈 — Unsplash' href='/ko'>
+            <svg
+              width='32'
+              height='32'
+              className='UP8CN'
+              viewBox='0 0 32 32'
+              version='1.1'
+              aria-labelledby='unsplash-홈'
+              aria-hidden='false'
+            >
+              <desc lang='en-US'>Unsplash logo</desc>
+              <title id='unsplash-홈'>Unsplash 홈</title>
+              <path d='M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z'></path>
+            </svg>
+          </a>
+        </nav>
+
+        <CusInput size='large' placeholder='large size' prefix={<SearchOutlined />} />
       </Header>
       <Container>
-        <>
-          {data?.data && !error && (
-            <div>
-              <ProductList products={data.data.products} />
-              <Pagination
-                pageList={pagenation.pageList}
-                nowPage={nowPage}
-                setNowPage={setNowPage}
-                next={pagenation.next}
-                prev={pagenation.prev}
-              />{' '}
-            </div>
-          )}
-          {error && <Error />}
-          {isLoading && <Loading />}
-        </>
+        <PhotoList photoList={photoList} />
       </Container>
     </>
   );
@@ -108,10 +93,7 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-`;
-
-const Title = styled.a`
-  font-size: 48px;
+  gap: 10px;
 `;
 
 const Container = styled.div`
@@ -121,6 +103,13 @@ const Container = styled.div`
   padding: 0 20px 40px;
 `;
 
-const LogoutBtn = styled.div`
-  cursor: pointer;
+const CusInput = styled(Input)`
+  height: 40px;
+  border: 1px solid #fff;
+  border-radius: 24px;
+  background-color: #eee;
+
+  input {
+    background-color: #eee !important;
+  }
 `;
