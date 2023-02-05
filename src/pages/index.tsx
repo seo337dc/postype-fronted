@@ -26,7 +26,7 @@ const HomePage: NextPage = () => {
   const [keyword, setKeyword] = useState('');
   const [photoList, setPhotList] = useState<TPhoto[]>([]);
 
-  const { refetch: initSearchRefech, isLoading: loadingInit } = useQuery(
+  const { refetch: initSearchRefech, isFetching: loadingInit } = useQuery(
     ['getInitSearch'],
     () => getInitSearch(nextPageRef.current),
     {
@@ -45,11 +45,12 @@ const HomePage: NextPage = () => {
           nextPageRef.current++;
         }
       },
+      enabled: false,
     }
   );
 
-  const { refetch: searchRefetch, isLoading: loadingSearch } = useQuery(
-    ['getSearch'],
+  const { refetch: searchRefetch, isFetching: loadingSearch } = useQuery(
+    ['getSearch', keyword],
     () => getSearch(keyword),
     {
       onSuccess: (res: AxiosResponse<TSearchPhoto>) => {
@@ -67,6 +68,7 @@ const HomePage: NextPage = () => {
           nextPageRef.current++;
         }
       },
+      enabled: false,
     }
   );
 
@@ -102,7 +104,7 @@ const HomePage: NextPage = () => {
     if (loadingSearch || loadingInit) return;
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadingSearch, loadingInit]);
+  }, [loadingSearch, loadingInit, handleScroll]);
 
   useEffect(() => {
     initSearchRefech();
@@ -163,6 +165,4 @@ const Container = styled.div`
 const CusInput = styled(Input.Search)`
   height: 40px;
   border-radius: 24px;
-`;
-
 `;
