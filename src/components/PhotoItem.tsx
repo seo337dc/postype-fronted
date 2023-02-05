@@ -3,6 +3,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
+import { SettingOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 import { TPhoto } from '@Type/photo';
 
@@ -21,22 +22,45 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
     window.open(data.user.links.html, '_blank', 'noopener, noreferrer');
   };
 
+  const onClickMobile = (data: TPhoto) => {
+    if (isPc) return;
+    if (!hover) setHover(data);
+  };
+
   return (
     <Wrap isPc={isPc}>
-      <Thumbnail onMouseEnter={() => setHover(photo)} onMouseLeave={() => setHover(null)}>
+      <Thumbnail
+        onClick={() => onClickMobile(photo)}
+        onMouseEnter={() => setHover(photo)}
+        onMouseLeave={() => setHover(null)}
+      >
         <img src={photo.urls.thumb ? photo.urls.thumb : '/defaultThumbnailPC.jpg'}></img>
         {hover === photo && (
-          <HoverWrap onClick={() => handleOpenNewTab(hover)}>
-            <UserProfile>
-              <img
-                src={
-                  hover.user.profile_image.large
-                    ? hover.user.profile_image.large
-                    : '/defaultThumbnailPC.jpg'
-                }
-              />
-            </UserProfile>
-            <UserName>{hover.user.name}</UserName>
+          <HoverWrap>
+            <SettingWrap>
+              <CustomSettingIcon />
+              {!isPc && (
+                <CustomCloseIcon
+                  onClick={() => {
+                    console.log('???');
+                    setHover(null);
+                  }}
+                />
+              )}
+            </SettingWrap>
+
+            <UserWrap onClick={() => handleOpenNewTab(hover)}>
+              <UserProfile>
+                <img
+                  src={
+                    hover.user.profile_image.large
+                      ? hover.user.profile_image.large
+                      : '/defaultThumbnailPC.jpg'
+                  }
+                />
+              </UserProfile>
+              <UserName>{hover.user.name}</UserName>
+            </UserWrap>
           </HoverWrap>
         )}
       </Thumbnail>
@@ -49,7 +73,6 @@ export default PhotoItem;
 const Wrap = styled.a<{ isPc: boolean }>`
   width: ${({ isPc }) => (isPc ? 'calc(100% / 3.2)' : '100%')};
   height: 200px;
-  cursor: pointer;
 `;
 
 const Thumbnail = styled.div`
@@ -76,6 +99,10 @@ const HoverWrap = styled.div`
   align-items: center;
 `;
 
+const UserWrap = styled.div`
+  cursor: pointer;
+`;
+
 const UserProfile = styled.div`
   width: 200px;
   height: 120px;
@@ -87,11 +114,28 @@ const UserProfile = styled.div`
 `;
 
 const UserName = styled.div`
-  width: 100px;
-  height: 50px;
-
+  width: 100%;
   color: #fff;
   font-weight: bold;
   font-size: 16px;
   text-align: center;
+`;
+
+const SettingWrap = styled.div`
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CustomSettingIcon = styled(SettingOutlined)`
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+`;
+
+const CustomCloseIcon = styled(CloseCircleOutlined)`
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
 `;
