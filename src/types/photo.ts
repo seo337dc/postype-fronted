@@ -16,6 +16,10 @@ export type TPhoto = {
       medium: string;
       small: string;
     };
+
+    links: {
+      html: string;
+    };
   };
   urls: {
     raw: string; //'https://images.unsplash.com/face-springmorning.jpg';

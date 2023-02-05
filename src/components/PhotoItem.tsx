@@ -17,12 +17,16 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
     query: '(min-width:1024px)',
   });
 
+  const handleOpenNewTab = (data: TPhoto) => {
+    window.open(data.user.links.html, '_blank', 'noopener, noreferrer');
+  };
+
   return (
     <Wrap isPc={isPc}>
       <Thumbnail onMouseEnter={() => setHover(photo)} onMouseLeave={() => setHover(null)}>
         <img src={photo.urls.thumb ? photo.urls.thumb : '/defaultThumbnailPC.jpg'}></img>
         {hover === photo && (
-          <HoverWrap>
+          <HoverWrap onClick={() => handleOpenNewTab(hover)}>
             <UserProfile>
               <img
                 src={
