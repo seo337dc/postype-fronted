@@ -11,6 +11,11 @@ export type TPhoto = {
     id: string; //
     username: string;
     name: string;
+    profile_image: {
+      large: string;
+      medium: string;
+      small: string;
+    };
   };
   urls: {
     raw: string; //'https://images.unsplash.com/face-springmorning.jpg';
