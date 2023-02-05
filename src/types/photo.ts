@@ -24,3 +24,9 @@ export type TPhoto = {
     html: string; //'https://unsplash.com/photos/LBI7cgq3pbM';
   };
 };
+
+export type TSearchPhoto = {
+  total: number;
+  total_pages: number;
+  results: TPhoto[];
+};

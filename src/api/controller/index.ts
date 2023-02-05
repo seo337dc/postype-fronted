@@ -25,17 +25,12 @@ export const getProductDetail = (id: number) => {
   return axios.get(`https://api.sixshop.com/products/${id}`).then((res) => res.data);
 };
 
-export const getSearch = (keyword: string) => {
-  if (keyword) {
-    const url = `${URL}/search/photos?client_id=${ACCESS_KEY}&page=1`;
-    return axios.get(url).then((res) => res.data);
-  } else {
-    const url = `${URL}/photos?client_id=${ACCESS_KEY}&page=1`;
-    return axios.get(url).then((res) => res.data);
-  }
+export const getSearch = async (keyword: string) => {
+  const url = `${URL}/search/photos?page=1&query=${keyword}&client_id=${ACCESS_KEY}`;
+  return await axios.get(url);
 };
 
-export const getInitSearch = async () => {
-  const url = `${URL}/photos?client_id=${ACCESS_KEY}&page=1`;
+export const getInitSearch = async (page: number) => {
+  const url = `${URL}/photos?page=${page}&client_id=${ACCESS_KEY}`;
   return await axios.get(url);
 };
