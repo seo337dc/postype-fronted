@@ -17,21 +17,9 @@ import type { TPhoto, TSearchPhoto } from '@Type/photo';
 
 import Loading from '@Components/Loading';
 
-import { useMediaQuery } from 'react-responsive';
 import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 
 const HomePage: NextPage = () => {
-  const isPc = useMediaQuery({
-    query: '(min-width:1024px)',
-  });
-  const isTablet = useMediaQuery({
-    query: '(min-width:768px) and (max-width:1023px)',
-  });
-  const isMobile = useMediaQuery({
-    query: '(max-width:767px)',
-  });
-
   const nextPageRef = useRef(1);
   const isSearch = useRef(false);
 
@@ -143,10 +131,8 @@ const HomePage: NextPage = () => {
 
         <CusInput
           size='large'
-          prefix={<SearchOutlined />}
-          placeholder='레포지토리를 검색하세요.'
+          placeholder='사진을 검색하세요.'
           value={keyword}
-          enterButton
           onSearch={onSearch}
           onChange={(e) => setKeyword(e.target.value)}
         />
@@ -172,16 +158,11 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 20px 40px;
 `;
 
 const CusInput = styled(Input.Search)`
   height: 40px;
-  border: 1px solid #fff;
   border-radius: 24px;
-  background-color: #eee;
+`;
 
-  input {
-    background-color: #eee !important;
-  }
 `;

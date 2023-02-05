@@ -1,3 +1,4 @@
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 
 import { TPhoto } from '@Type/photo';
@@ -7,18 +8,22 @@ type TProps = {
 };
 
 const PhotoItem = ({ photo }: TProps) => {
+  const isPc = useMediaQuery({
+    query: '(min-width:1024px)',
+  });
+
   return (
-    <Container>
-      <Thumbnail src={photo.urls.thumb ? photo.urls.thumb : '/defaultThumbnail.jpg'} />
-    </Container>
+    <Wrap isPc={isPc}>
+      <Thumbnail src={photo.urls.thumb ? photo.urls.thumb : '/defaultThumbnailPC.jpg'} />
+    </Wrap>
   );
 };
 
 export default PhotoItem;
 
-const Container = styled.a`
-  width: calc(100% / 4);
-  height: 180px;
+const Wrap = styled.a<{ isPc: boolean }>`
+  width: ${({ isPc }) => (isPc ? 'calc(100% / 3.2)' : '100%')};
+  height: 200px;
   cursor: pointer;
 `;
 
