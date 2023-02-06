@@ -63,7 +63,6 @@ const HomePage: NextPage = () => {
             setPhotList(res.data.results);
           }
 
-          // 현재 위치를 기준으로 가로200px, 세로300px 스크롤 이동
           if (nextPageRef.current > 1) window.scrollBy(0, 10);
           nextPageRef.current++;
         }
