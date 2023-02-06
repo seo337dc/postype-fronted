@@ -76,7 +76,14 @@ const Img = styled.div<{ img: string }>`
 const ImageInfo = styled.div`
   display: flex;
   align-items: center;
-  gap: 150px; // 50px
+
+  @media all and (min-width: 768px) {
+    gap: 150px;
+  }
+
+  @media (max-width: 767px) {
+    gap: 50px;
+  }
 
   .content .title {
     color: #767676;
@@ -97,11 +104,13 @@ const CameraInfo = styled.div`
 `;
 
 const RelatedPhtoContainer = styled.div`
+  margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 5px;
 `;
+
 const RelatedPhto = styled.div<{ img: string }>`
   width: 200px;
   height: 200px;

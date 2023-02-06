@@ -1,16 +1,10 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import { useState, Dispatch, SetStateAction } from 'react';
-import { useMediaQuery } from 'react-responsive';
 import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
 import { Modal, Spin } from 'antd';
-import {
-  SettingOutlined,
-  CloseCircleOutlined,
-  CameraOutlined,
-  CalendarOutlined,
-} from '@ant-design/icons';
+import { SettingOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 import ModalTitle from '@Components/ModalTItle';
 import ModalDetail from '@Components/ModalDetail';
@@ -18,19 +12,14 @@ import ModalDetail from '@Components/ModalDetail';
 import type { TPhoto, TPhotoDetail } from '@Type/photo';
 import { getPhotoInfo } from '@Controller/index';
 
-import { timeForToday } from '@Util';
-
 type TProps = {
   photo: TPhoto;
   hover: TPhoto | null;
   setHover: Dispatch<SetStateAction<TPhoto | null>>;
+  isPc: boolean;
 };
 
-const PhotoItem = ({ photo, hover, setHover }: TProps) => {
-  const isPc = useMediaQuery({
-    query: '(min-width:1024px)',
-  });
-
+const PhotoItem = ({ photo, hover, setHover, isPc }: TProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [photoId, setPhotoId] = useState('');
 
@@ -65,7 +54,7 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
   if (data) console.log(data);
 
   return (
-    <Wrap isPc={isPc}>
+    <Wrap>
       <Thumbnail
         onClick={() => !isPc && onClickMobile(photo)}
         onMouseEnter={() => isPc && setHover(photo)}
@@ -112,9 +101,16 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
 
 export default PhotoItem;
 
-const Wrap = styled.a<{ isPc: boolean }>`
-  width: ${({ isPc }) => (isPc ? 'calc(100% / 3.2)' : '100%')};
+const Wrap = styled.a`
   height: 200px;
+
+  @media all and (min-width: 768px) {
+    width: calc(100% / 3.2);
+  }
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
 `;
 
 const Thumbnail = styled.div`
@@ -180,33 +176,4 @@ const CustomCloseIcon = styled(CloseCircleOutlined)`
   color: #fff;
   font-size: 20px;
   cursor: pointer;
-`;
-
-const Img = styled.div<{ img: string }>`
-  height: 80vh;
-  background-image: url(${({ img }) => img});
-  background-size: cover;
-`;
-
-const ImageInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 150px;
-
-  .content .title {
-    color: #767676;
-    font-size: 14px;
-    width: fit-content;
-  }
-`;
-
-const CameraInfo = styled.div`
-  margin-top: 25px;
-
-  .content {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    color: #767676;
-  }
 `;

@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useRecoilState } from 'recoil';
+import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import { throttle } from 'lodash';
+import { Input } from 'antd';
 
 import PhotoList from '@Components/PhotoList';
 import Error from '@Components/Error';
@@ -15,7 +18,7 @@ import type { TPhoto, TSearchPhoto } from '@Type/photo';
 
 import Loading from '@Components/Loading';
 
-import { Input } from 'antd';
+import { responsiveAtom } from '@Atom/index';
 
 const HomePage: NextPage = () => {
   const nextPageRef = useRef(1);
