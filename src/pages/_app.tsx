@@ -6,10 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AxiosError } from 'axios';
 import { RecoilRoot } from 'recoil';
 
-import setupMSW from '@Api/setup';
 import GlobalStyle from '@Style/GlobalStyle';
-
-setupMSW();
 
 function MyApp({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient({
