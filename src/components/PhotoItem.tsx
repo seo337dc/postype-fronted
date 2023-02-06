@@ -24,29 +24,23 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
 
   const onClickMobile = (data: TPhoto) => {
     if (isPc) return;
-    if (!hover) setHover(data);
+    if (data === hover) return;
+    setHover(data);
   };
 
   return (
     <Wrap isPc={isPc}>
       <Thumbnail
-        onClick={() => onClickMobile(photo)}
-        onMouseEnter={() => setHover(photo)}
-        onMouseLeave={() => setHover(null)}
+        onClick={() => !isPc && onClickMobile(photo)}
+        onMouseEnter={() => isPc && setHover(photo)}
+        onMouseLeave={() => isPc && setHover(null)}
       >
         <img src={photo.urls.thumb ? photo.urls.thumb : '/defaultThumbnailPC.jpg'}></img>
         {hover === photo && (
           <HoverWrap>
             <SettingWrap>
-              <CustomSettingIcon />
-              {!isPc && (
-                <CustomCloseIcon
-                  onClick={() => {
-                    console.log('???');
-                    setHover(null);
-                  }}
-                />
-              )}
+              <CustomSettingIcon onClick={() => {}} />
+              {!isPc && <CustomCloseIcon onClick={() => setHover(null)} />}
             </SettingWrap>
 
             <UserWrap onClick={() => handleOpenNewTab(hover)}>
