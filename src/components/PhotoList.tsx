@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useMediaQuery } from 'react-responsive';
 
-import PhotoItem from './PhotoItem';
+import PhotoItem from '@Components/PhotoItem';
 
 import type { TPhoto } from '@Type/photo';
 

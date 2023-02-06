@@ -1,13 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useRecoilState } from 'recoil';
-import { useMediaQuery } from 'react-responsive';
 import styled from 'styled-components';
 import { throttle } from 'lodash';
 import { Input } from 'antd';
 
 import PhotoList from '@Components/PhotoList';
-import Error from '@Components/Error';
 
 import { getInitSearch, getSearch } from '@Controller/index';
 
@@ -16,10 +13,6 @@ import type { AxiosResponse } from 'axios';
 
 import type { TPhoto, TSearchPhoto } from '@Type/photo';
 
-import Loading from '@Components/Loading';
-
-import { responsiveAtom } from '@Atom/index';
-
 const HomePage: NextPage = () => {
   const nextPageRef = useRef(1);
   const isSearch = useRef(false);
@@ -27,6 +20,7 @@ const HomePage: NextPage = () => {
   const [keyword, setKeyword] = useState('');
   const [photoList, setPhotList] = useState<TPhoto[]>([]);
 
+  // 검색어 없이 api 실행(초기 실행) : https://api.unsplash.com/photos
   const { refetch: initSearchRefech, isFetching: loadingInit } = useQuery(
     ['getInitSearch'],
     () => getInitSearch(nextPageRef.current),
@@ -50,9 +44,10 @@ const HomePage: NextPage = () => {
     }
   );
 
+  // 검색어 있을 경우 api 실행 : https://api.unsplash.com/search/photos
   const { refetch: searchRefetch, isFetching: loadingSearch } = useQuery(
     ['getSearch', keyword],
-    () => getSearch(keyword),
+    () => getSearch(keyword, nextPageRef.current),
     {
       onSuccess: (res: AxiosResponse<TSearchPhoto>) => {
         if (res.status === 200) {
@@ -72,6 +67,7 @@ const HomePage: NextPage = () => {
     }
   );
 
+  // 검색 버튼 클릭 시, 페이지 1로 변화
   const onSearch = () => {
     nextPageRef.current = 1;
     if (keyword) {
@@ -83,6 +79,7 @@ const HomePage: NextPage = () => {
     }
   };
 
+  // 무한 스크롤 함수
   const handleScroll = throttle(() => {
     if (loadingSearch || loadingInit) return;
 
@@ -100,11 +97,11 @@ const HomePage: NextPage = () => {
     }
   }, 300);
 
+  // 무한 스크롤 함수 적용
   useEffect(() => {
-    if (loadingSearch || loadingInit) return;
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadingSearch, loadingInit, handleScroll]);
+  }, [handleScroll]);
 
   useEffect(() => {
     initSearchRefech();

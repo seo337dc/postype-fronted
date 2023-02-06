@@ -51,8 +51,6 @@ const PhotoItem = ({ photo, hover, setHover, isPc }: TProps) => {
     }
   );
 
-  if (data) console.log(data);
-
   return (
     <Wrap>
       <Thumbnail
