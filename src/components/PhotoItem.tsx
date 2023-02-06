@@ -1,11 +1,24 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { Dispatch, SetStateAction } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import { useQuery } from '@tanstack/react-query';
 import styled from 'styled-components';
-import { SettingOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Modal, Spin } from 'antd';
+import {
+  SettingOutlined,
+  CloseCircleOutlined,
+  CameraOutlined,
+  CalendarOutlined,
+} from '@ant-design/icons';
 
-import { TPhoto } from '@Type/photo';
+import ModalTitle from '@Components/ModalTItle';
+import ModalDetail from '@Components/ModalDetail';
+
+import type { TPhoto, TPhotoDetail } from '@Type/photo';
+import { getPhotoInfo } from '@Controller/index';
+
+import { timeForToday } from '@Util';
 
 type TProps = {
   photo: TPhoto;
@@ -18,6 +31,9 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
     query: '(min-width:1024px)',
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [photoId, setPhotoId] = useState('');
+
   const handleOpenNewTab = (data: TPhoto) => {
     window.open(data.user.links.html, '_blank', 'noopener, noreferrer');
   };
@@ -27,6 +43,26 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
     if (data === hover) return;
     setHover(data);
   };
+
+  const handleOpenModal = (id: string) => {
+    setPhotoId(id);
+    setIsModalOpen(true);
+  };
+
+  const handleCancelModal = () => {
+    setPhotoId('');
+    setIsModalOpen(false);
+  };
+
+  const { data, isFetching } = useQuery<TPhotoDetail>(
+    ['getPhotoInfo', photoId],
+    () => getPhotoInfo(photoId),
+    {
+      enabled: !!photoId,
+    }
+  );
+
+  if (data) console.log(data);
 
   return (
     <Wrap isPc={isPc}>
@@ -39,7 +75,7 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
         {hover === photo && (
           <HoverWrap>
             <SettingWrap>
-              <CustomSettingIcon onClick={() => {}} />
+              <CustomSettingIcon onClick={() => handleOpenModal(photo.id)} />
               {!isPc && <CustomCloseIcon onClick={() => setHover(null)} />}
             </SettingWrap>
 
@@ -58,6 +94,18 @@ const PhotoItem = ({ photo, hover, setHover }: TProps) => {
           </HoverWrap>
         )}
       </Thumbnail>
+
+      <Spin spinning={isFetching}>
+        <Modal
+          title={<ModalTitle photoInfo={data || null} />}
+          open={isModalOpen}
+          onOk={handleCancelModal}
+          onCancel={handleCancelModal}
+          width={1000}
+        >
+          {data && <ModalDetail photoInfo={data} />}
+        </Modal>
+      </Spin>
     </Wrap>
   );
 };
@@ -132,4 +180,33 @@ const CustomCloseIcon = styled(CloseCircleOutlined)`
   color: #fff;
   font-size: 20px;
   cursor: pointer;
+`;
+
+const Img = styled.div<{ img: string }>`
+  height: 80vh;
+  background-image: url(${({ img }) => img});
+  background-size: cover;
+`;
+
+const ImageInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 150px;
+
+  .content .title {
+    color: #767676;
+    font-size: 14px;
+    width: fit-content;
+  }
+`;
+
+const CameraInfo = styled.div`
+  margin-top: 25px;
+
+  .content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #767676;
+  }
 `;

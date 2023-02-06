@@ -26,7 +26,8 @@
       "@Style": ["src/styles"],
       "@Style/*": ["src/styles/*"],
       "@Hook/*": ["src/hook/*"],
-      "@Api/*": ["src/api/*"]
+      "@Api/*": ["src/api/*"],
+      "@Util": ["src/utilities"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

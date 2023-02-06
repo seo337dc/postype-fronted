@@ -34,3 +34,9 @@ export const getInitSearch = async (page: number) => {
   const url = `${URL}/photos?page=${page}&client_id=${ACCESS_KEY}`;
   return await axios.get(url);
 };
+
+export const getPhotoInfo = async (id: string) => {
+  const url = `${URL}/photos/${id}?client_id=${ACCESS_KEY}`;
+  const { data } = await axios.get(url);
+  return data;
+};

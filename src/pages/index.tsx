@@ -1,7 +1,5 @@
-import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import { throttle } from 'lodash';
 
