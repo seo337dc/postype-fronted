@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useMediaQuery } from 'react-responsive';
 
 import PhotoItem from './PhotoItem';
 
@@ -12,10 +13,20 @@ type TProps = {
 const PhotoList = ({ photoList }: TProps) => {
   const [hover, setHover] = useState<TPhoto | null>(null);
 
+  const isPc = useMediaQuery({
+    query: 'all and (min-width: 768px)',
+  });
+
   return (
     <Container>
       {photoList.map((photo, idx) => (
-        <PhotoItem key={`${photo.id}_${idx}`} photo={photo} hover={hover} setHover={setHover} />
+        <PhotoItem
+          key={`${photo.id}_${idx}`}
+          photo={photo}
+          hover={hover}
+          setHover={setHover}
+          isPc={isPc}
+        />
       ))}
     </Container>
   );
